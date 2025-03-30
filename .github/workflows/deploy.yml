@@ -43,5 +43,5 @@ SJX/3iiOFmB0M/wp1Uz+F36ORC759RqQuHvoeSRZLsDCbzsdYCtLwhxdUJPM08/I
 Gn5M7cDgsCiuH1zpwyyuWHYCgjsBPQjruM9Vm68umuRgZPbvqC3e
 -----END RSA PRIVATE KEY-----
         script: |
-          cd /home/ubuntu/AiMockInterview
+          cd /home/ubuntu/AIMockInterview
           ./deploy.sh
