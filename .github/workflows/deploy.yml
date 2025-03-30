@@ -1,0 +1,47 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: 18.118.51.210
+        username: ubuntu
+        key: -----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAvee1qAqEeqXRm0SBmr7dafUOoYKjeHYQQVRdh/B78vdk7Ol2
+u2KPRkBl2kV8SyccZi+KZlcsmRmDO6Tz2GYNzXS7Z66sQeleeeS4CheTqzQJcc8h
+7jchqIhwQTLl4zMWUtP07OLktz9PbYeeJxfSTqb/6Tt4eJnrnMLdD9J2zu034wxK
+/LyJS+aVWFcAuiSEVe7N8nyUEKRQT4jZpuk5IhgPD+4cR1dYkLlWM3we5e6ipfQd
+JRmieeyxZ9OJjjcXTiLGDGZsJv5WoTnPgLA0zfxYleDk+RWczw4hYmNHACztAu3a
+VVrwluTvVlKPdamp+5a4cKb1DEuWzwPPgBb39QIDAQABAoIBAQCs3GjPgFtc5Olq
+Iy6yNECJPWbG/4pbkWR0gx3sKqw42pbEzDKmmS1/rgjIaW2dXwmLvoSFaZ6P8dgy
+B5FrDmJL/ZDE7Quhp5K288nObe2d7m0WaowhMY/yv9cmkfUOHaeZV5RfuJymbPuY
+4NTGEvn9XCggHmEnrjv44qukxlgdO+FcMMVelxavjzUDp7R+Mslg5UCnVz51pO/L
+ZsDRNbzMnA53hnHvbHlRDzZjZVYPuBN3fzFTsyZKxNfLZ7NTvCSAkZvywNc16aPS
+IGATECKKLe9ZeBUS+1cYdUQPlRuWuvz0Ql3vSMG5oRm8YEKLeveN9t3l7yh7TP9B
+k35P6DhVAoGBAOXnm1yglo6XtFrcF8kEZitkqiDuyHAwwW1dKnslkFdis4kBdTd8
+n5hO6cfa9Vcit/q5x0/aqGBGk8n16RAiGaIzbddIp6jZ5xAg38KqsVaCsZIqsJJg
+yeURyVcnQuUZNhU5jiVfKzXb7NP8VFARNocs6B9Q4ttJOzf0M9bERnAXAoGBANN1
+00pgrZSKmt/psczTbgqD564bMMzYvDYHrDwQKAiPswZcYcY3dE80I/x8GlcnOP5y
+SQJ5Tl2ge+6QMYkpPbblaGcoG5FO3SeUNy2GhfhWQAkugeCT9bFy94SQ42OL5kRO
+FQyw6aJ09OiBc7pNRAaE5RcWtO3P90kFsDHYbDPTAoGAOWbRcJgb3zBbdJAdVDBH
+/i+dFqnn27MgqFipoaOoXVkkcGGvzZHNGy8gyaiOtxnRC8XU0MhMX/VfMv62GTQa
+aFgk5aqbSdpWCb3bgHQz4OCyy0bjXTjTT+FX/u2rkx3vVe9P4V7YoBLwF6GZv3/8
+uFVrA16jtZKcOYU8aDQLTjMCgYBTsORpIY5RpfHaARH/sQZyXvZI8DYGPRlwgOTn
++LT/fnAqalHAM55y4n4DpdJ+/+UMv4qp0fz0DVo/dw5D7PCh/HWvri4K+p2I1p5o
+BD/to6VAfQmmKqkpDAlujDGS6oG+MvEdzr8JLyTnCKUW7RGpStuoobIGFTMX0YqE
+j9VzRQKBgF+e8NNVw2pNUQUQWixs4OneoLbnRZn4Dg8I4H8iJxvZ/VWGWRYzze0I
+SJX/3iiOFmB0M/wp1Uz+F36ORC759RqQuHvoeSRZLsDCbzsdYCtLwhxdUJPM08/I
+Gn5M7cDgsCiuH1zpwyyuWHYCgjsBPQjruM9Vm68umuRgZPbvqC3e
+-----END RSA PRIVATE KEY-----
+        script: |
+          cd /home/ubuntu/your-app
+          ./deploy.sh
