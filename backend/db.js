@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/ai-powered-mock-interview', {
+    await mongoose.connect(process.env.DATABASE_URL , {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
