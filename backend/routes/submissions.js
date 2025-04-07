@@ -5,14 +5,11 @@ const Submission = require('../models/Submission');
 
 // POST a new submission
 router.post('/', async (req, res) => {
-  const { jobId, code, language } = req.body;
+  const { jobId, userId, code, language, result, feedback } = req.body;
 
   try {
-    // Here you could call Judge0 API for code execution and feedback generation
-    const result = 'Executed Successfully'; // Stub
-    const feedback = 'Code is clean and efficient'; // Stub
 
-    const submission = new Submission({ jobId, code, language, result, feedback });
+    const submission = new Submission({ jobId, userId, code, language, result, feedback });
     await submission.save();
 
     res.status(201).json(submission);
@@ -21,10 +18,12 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET submissions (optional)
+// GET submissions
 router.get('/', async (req, res) => {
   try {
-    const submissions = await Submission.find().populate('jobId');
+    const submissions = await Submission.find()
+      .populate('jobId')
+      .populate('userId'); 
     res.json(submissions);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch submissions' });

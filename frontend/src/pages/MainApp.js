@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 
-export default function MainApp() {
+export default function MainApp({user}) {
   const [showEditor, setShowEditor] = useState(false);
   const [code, setCode] = useState('// Write your solution here');
   const [output, setOutput] = useState('');
@@ -60,10 +60,11 @@ export default function MainApp() {
           })
         }
       );
-
+  
       const result = await response.json();
-      setOutput(result.stdout || result.stderr || 'No output');
-
+      const finalOutput = result.stdout || result.stderr || 'No output';
+      setOutput(finalOutput);
+  
       // Step 2: Request AI code review
       const reviewRes = await fetch('http://localhost:5002/api/chatgpt/review', {
         method: 'POST',
@@ -71,12 +72,29 @@ export default function MainApp() {
         body: JSON.stringify({
           code,
           question: currentQuestion.generatedQuestion,
-          prompt: 'Review this code and give improvement suggestions and efficiency feedback based on question and code. what improvements they need to get solution of question.'
+          prompt:
+            'Review this code and give improvement suggestions and efficiency feedback based on question and code. What improvements they need to get solution of question.'
         }),
       });
-
+  
       const reviewData = await reviewRes.json();
-      setReview(reviewData.review || '⚠️ Review could not be generated.');
+      const finalReview = reviewData.review || '⚠️ Review could not be generated.';
+      setReview(finalReview);
+  
+      // ✅ Step 3: Save submission to backend
+      await fetch('http://localhost:5002/api/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jobId: currentQuestion._id,
+          userId: user._id,
+          code,
+          language: selectedLanguage,
+          result: finalOutput,
+          feedback: finalReview,
+        }),
+      });
+  
     } catch (err) {
       console.error('Error during code run or review:', err);
       setOutput('⚠️ Error running code.');

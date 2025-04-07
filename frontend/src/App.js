@@ -39,7 +39,7 @@ export default function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={user ? <MainApp /> : <Navigate to="/login" />} />
+        <Route path="/" element={user ? <MainApp user={user} /> : <Navigate to="/login" />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/signup" element={<Signup onAuth={handleAuth} />} />
         <Route path="/login" element={<Login onAuth={handleAuth} />} />
