@@ -97,7 +97,7 @@ export default function MainApp() {
                   <h5 className="card-title text-primary">{job.title}</h5>
                   <h6 className="card-subtitle mb-2 text-muted">{job.company}</h6>
                   <p className="text-muted mb-1">{job.location || 'Remote'}</p>
-                  <p className="card-text flex-grow-1">{job.description}</p>
+                  <p className="card-text flex-grow-1">{job.description.length > 100 ? `${job.description.slice(0, 100)}...` : job.description}</p>
                   <p className="text-warning fw-bold">Difficulty: {job.difficulty}</p>
                   <div className="mb-2">
                     {job.language?.map((lang, idx) => (

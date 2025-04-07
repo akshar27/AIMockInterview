@@ -32,15 +32,15 @@ export default function App() {
             <>
               <Link to="/login" className="btn btn-outline-success">Login</Link>
               <Link to="/signup" className="btn btn-outline-primary">Signup</Link>
+              <Link to="/admin" className="btn btn-outline-warning">🛠 Admin</Link>
             </>
           )}
-          <Link to="/admin" className="btn btn-outline-warning">🛠 Admin</Link>
         </div>
       </nav>
 
       <Routes>
         <Route path="/" element={user ? <MainApp /> : <Navigate to="/login" />} />
-        <Route path="/admin" element={user ? <AdminPage /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/signup" element={<Signup onAuth={handleAuth} />} />
         <Route path="/login" element={<Login onAuth={handleAuth} />} />
       </Routes>
