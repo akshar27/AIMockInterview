@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminPage() {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ export default function AdminPage() {
     language: '',
   });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,6 +35,7 @@ export default function AdminPage() {
       if (response.ok) {
         setMessage('✅ Job added successfully!');
         setForm({ title: '', company: '', description: '', difficulty: '', question: '', language: '' });
+        navigate('/');
       } else {
         setMessage(data.error || 'Something went wrong!');
       }
