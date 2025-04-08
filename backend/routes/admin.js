@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Job = require('../models/Job');
+const syncJobsToDB = require('../services/syncJobs');
 
 // POST /api/admin/add-job - Admin adds a new job
 router.post('/add-job', async (req, res) => {
@@ -27,5 +28,19 @@ router.post('/add-job', async (req, res) => {
     res.status(500).json({ error: '❌ Failed to add job', details: err.message });
   }
 });
+
+// POST /api/admin/sync-jobs
+router.post('/sync-jobs', async (req, res) => {
+  try {
+    await syncJobsToDB(); 
+    res.status(200).json({ message: '✅ Jobs synced successfully from LinkedIn.' });
+  } catch (err) {
+    console.error('❌ Error syncing jobs:', err.message);
+    res.status(500).json({ error: 'Failed to sync jobs', details: err.message });
+  }
+});
+
+module.exports = router;
+
 
 module.exports = router;

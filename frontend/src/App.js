@@ -5,6 +5,7 @@ import AdminPage from './pages/AdminPage';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from './assets/navbar_logo.png'; 
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -21,7 +22,9 @@ export default function App() {
   return (
     <Router>
       <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-        <Link className="navbar-brand" to="/">Mock Interview</Link>
+        <Link className="navbar-brand" to="/">
+          <img src={logo} alt="Mock Code Logo" style={{ height: '75px', width: '100px' }} />
+        </Link>
         <div className="ms-auto d-flex gap-2">
           {user ? (
             <>

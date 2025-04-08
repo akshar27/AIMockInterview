@@ -42,13 +42,51 @@ router.post('/generate_question', async (req, res) => {
 
   try {
     const basePrompt = `
-Generate a ${difficulty} random data structure LeetCode-style coding question that could be asked in a technical interview from leetcode website.
- ${prompt}` ;
+    You are a helpful assistant that generates realistic LeetCode-style coding interview questions.
+    
+    Given the following job description:
+    "${jobDescription}"
+    
+    And the desired difficulty: ${difficulty}
+    
+    Generate a LeetCode-style coding interview question that tests knowledge of data structures, algorithms and is relevant to the skills and responsibilities described in the job description.
+    
+    Use the following example format to guide your output:
+    
+    ---
+    **Example Question:**
+    
+    **Title**: Merge Intervals
+    
+    **Problem**: Given an array of intervals where intervals[i] = [start_i, end_i], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+    
+    **Input**: intervals = [[1,3],[2,6],[8,10],[15,18]]
+    
+    **Output**: [[1,6],[8,10],[15,18]]
+    
+    **Constraints**:
+    - 1 <= intervals.length <= 10⁴
+    - intervals[i].length == 2
+    - 0 <= start_i <= end_i <= 10⁴
+    
+    ---
+    
+    Follow the same structure: 
+    - Title
+    - Problem description
+    - Input
+    - Output
+    - Constraints
+    - At least one example
+    
+    Make sure the question involves data structures such as arrays, strings, linked lists, trees, graphs, heaps, etc., and fits the job description context.
+    `;
+    
 
     const gptResponse = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'You are a helpful assistant that generates realistic LeetCode-style coding interview questions.' },
+        { role: 'system', content: 'You are a helpful assistant that generates realistic LeetCode-style data structure and algorithm coding interview questions.' },
         { role: 'user', content: basePrompt },
       ],
     });

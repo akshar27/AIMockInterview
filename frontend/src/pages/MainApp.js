@@ -104,7 +104,7 @@ export default function MainApp({user}) {
 
   return (
     <div className="container py-5">
-      <h1 className="text-center mb-5 display-6 fw-bold text-primary">Mock Interview Platform</h1>
+      <h1 className="text-center mb-5 display-6 fw-bold text-primary">🚧 Job Postings & Code Challenges</h1>
 
       {!showEditor && (
         <div className="row g-4">
