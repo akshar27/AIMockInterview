@@ -129,6 +129,7 @@ export default function MainApp({user}) {
                       allLanguage();
                       setCurrentQuestion({
                         title: job.title,
+                        company: job.company,
                         description: job.description,
                         example: 'AI is generating random question based on job description and its difficulty level',
                         sample: 'AI is generating sample for above question',
@@ -157,6 +158,7 @@ export default function MainApp({user}) {
 
                         setCurrentQuestion({
                           title: job.title,
+                          company: job.company,
                           description: job.description,
                           example: generatedQuestion,
                           sample: sampleData.sample || '⚠️ No input/output sample generated.',
@@ -166,6 +168,7 @@ export default function MainApp({user}) {
                         console.error('Error generating question/sample:', err);
                         setCurrentQuestion({
                           title: job.title,
+                          company: job.company,
                           description: job.description,
                           example: '⚠️ Error generating coding question.',
                           sample: '⚠️ Could not fetch sample input/output.',
@@ -188,6 +191,7 @@ export default function MainApp({user}) {
             <div className="card shadow">
               <div className="card-body">
                 <h4 className="card-title">{currentQuestion?.title}</h4>
+                <p className="card-text white-space-pre-line">{currentQuestion?.company}</p>
                 <p className="card-text white-space-pre-line">{currentQuestion?.description}</p>
                 {currentQuestion?.example && (
                   <>
