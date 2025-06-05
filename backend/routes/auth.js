@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const generateToken = require('../utils/generateToken');
 
 // Signup Route
 router.post('/signup', async (req, res) => {
@@ -14,13 +13,20 @@ router.post('/signup', async (req, res) => {
 
     user = new User({ name, email, password });
     await user.save();
-    console.log(user);
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    console.log(token);
-    res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email } });
+
+    const token = generateToken(user._id);
+    res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error('[Signup Error]', err);
+    res.status(500).json({ message: 'Something went wrong. Please try again later.' });
   }
 });
 
@@ -29,18 +35,24 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    const token = generateToken(user._id);
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error('[Login Error]', err);
+    res.status(500).json({ message: 'Something went wrong. Please try again later.' });
   }
 });
 

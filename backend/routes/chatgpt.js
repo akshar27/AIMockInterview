@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const OpenAI = require('openai');
+const removeMd = require('remove-markdown');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -91,7 +92,7 @@ router.post('/generate_question', async (req, res) => {
       ],
     });
 
-    const sample = gptResponse.choices[0].message.content;
+    const sample = removeMd(gptResponse.choices[0].message.content);
     res.status(200).json({ sample });
 
   } catch (err) {
@@ -119,7 +120,7 @@ router.post('/review', async (req, res) => {
       ],
     });
 
-    const review = gptResponse.choices[0].message.content;
+    const review = removeMd(gptResponse.choices[0].message.content);
     res.status(200).json({ review });
   } catch (err) {
     console.error('ChatGPT Review Error:', err.response?.data || err.message || err);

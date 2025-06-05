@@ -12,6 +12,7 @@
 /build
 
 # misc
+cookies.json
 .env
 .DS_Store
 .env.local

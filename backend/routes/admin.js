@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Job = require('../models/Job');
 const syncJobsToDB = require('../services/syncJobs');
+const syncLeetCodeQuestionsToDB = require('../services/leetcodeScraper');
 
 // POST /api/admin/add-job - Admin adds a new job
 router.post('/add-job', async (req, res) => {
@@ -40,7 +41,15 @@ router.post('/sync-jobs', async (req, res) => {
   }
 });
 
-module.exports = router;
+router.post('/sync-leetcode', async (req, res) => {
+  try {
+    await syncLeetCodeQuestionsToDB();
+    res.status(200).json({ message: '✅ LeetCode questions synced to DB.' });
+  } catch (err) {
+    console.error('❌ Error syncing LeetCode:', err.message);
+    res.status(500).json({ error: 'Failed to sync LeetCode', details: err.message });
+  }
+});
 
 
 module.exports = router;
