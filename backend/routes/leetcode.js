@@ -1,4 +1,3 @@
-// backend/routes/leetcode.js
 const express = require('express');
 const router = express.Router();
 const fetch = require('node-fetch');
@@ -7,14 +6,14 @@ router.post('/ai-match', async (req, res) => {
   const { title, description, difficulty } = req.body;
 
   const prompt = `
-You are a career coach AI assistant.
+You are a LeetCode expert who returns STRICTLY valid JSON only.
 
-Given the job:
+Given:
 Title: ${title}
 Description: ${description}
 Difficulty: ${difficulty}
 
-Suggest ONE LeetCode-style problem in this exact JSON format (no extra comments or words):
+Respond with EXACTLY this JSON structure (no markdown, no comments):
 
 {
   "title": "Longest Substring Without Repeating Characters",
@@ -28,7 +27,8 @@ Suggest ONE LeetCode-style problem in this exact JSON format (no extra comments 
   ]
 }
 
-Strictly follow JSON formatting rules. No markdown or explanations.
+Output only the JSON. Do not wrap it in markdown or text.
+Ensure it is 100% valid for JSON.parse().
 `;
 
   try {
@@ -39,16 +39,34 @@ Strictly follow JSON formatting rules. No markdown or explanations.
     });
 
     const data = await chatRes.json();
+    console.log("🧠 Raw AI Response:", data);
 
-    const match = data.sample.match(/\{[\s\S]*?\}/);
-    const parsed = match ? JSON.parse(match[0]) : null;
+    // ✅ Defensive check for missing or invalid response
+    if (!data || !data.sample || typeof data.sample !== 'string') {
+      console.error("❌ Invalid AI response:", data);
+      return res.status(500).json({ error: 'AI did not return a valid JSON string.' });
+    }
 
-    if (!parsed) throw new Error('AI returned invalid JSON');
+    // ✅ Try extracting the first JSON block using regex
+    const jsonMatch = data.sample.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error("❌ No JSON block found in sample string");
+      return res.status(500).json({ error: 'No valid JSON object found in AI output.' });
+    }
 
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseErr) {
+      console.error("❌ JSON parse error:", parseErr.message);
+      return res.status(500).json({ error: `AI returned malformed JSON: ${parseErr.message}` });
+    }
+
+    // ✅ Return clean response
     res.json(parsed);
   } catch (err) {
-    console.error('❌ LeetCode AI error:', err.message);
-    res.status(500).json({ error: 'Failed to get LeetCode problem' });
+    console.error('❌ Backend LeetCode AI error:', err.message);
+    res.status(500).json({ error: 'Failed to contact chatgpt endpoint or parse response.' });
   }
 });
 

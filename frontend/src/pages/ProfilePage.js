@@ -34,7 +34,7 @@ export default function ProfilePage({ user }) {
       <p><strong>Email:</strong> {profile.user.email}</p>
       <p><strong>Joined:</strong> {new Date(profile.user.createdAt).toLocaleDateString()}</p>
 
-      <ResumeUpload userId={user.id || user._id} />
+      {/* <ResumeUpload userId={user.id || user._id} /> */}
       <hr />
 
       <h4>📄 Jobs Applied</h4>

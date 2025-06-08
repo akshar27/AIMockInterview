@@ -235,40 +235,70 @@ export default function MainApp({ user }) {
                     <button
                       className="btn btn-primary mt-auto"
                       onClick={async () => {
-                        setShowEditor(true);
-                        allLanguage();
-
-                        const endpoint = sourceToggle === 'leetcode'
-                          ? 'http://localhost:5002/api/leetcode/ai-match'
-                          : 'http://localhost:5002/api/gfg/ai-match';
-
-                        const res = await fetch(endpoint, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            title: job.title,
+                        try {
+                          setShowEditor(true);
+                          await allLanguage();
+                      
+                          const endpoint = sourceToggle === 'leetcode'
+                            ? 'http://localhost:5002/api/leetcode/ai-match'
+                            : 'http://localhost:5002/api/gfg/ai-match';
+                      
+                          const res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              title: job.title,
+                              description: job.description,
+                              difficulty: job.difficulty
+                            })
+                          });
+                      
+                          const responseJson = await res.json();
+                          console.log("🧠 AI Response:", responseJson); // 🔍 Log AI output
+                      
+                          if (responseJson.error) {
+                            alert("❌ Error: " + responseJson.error);
+                            return;
+                          }
+                      
+                          let question = {
+                            title: '',
+                            company: job.company,
                             description: job.description,
-                            difficulty: job.difficulty
-                          })
-                        });
-
-                        const { result, testCases } = await res.json();
-                        const title = result.match(/Title:\s*(.*)/)?.[1] || job.title;
-                        const problem = result.match(/Problem:\s*([\s\S]*?)\nInput:/)?.[1]?.trim() || '';
-                        const input = result.match(/Input:\s*([\s\S]*?)\nOutput:/)?.[1]?.trim() || '';
-                        const output = result.match(/Output:\s*([\s\S]*?)\nExplanation:/)?.[1]?.trim() || '';
-                        const explanation = result.match(/Explanation:\s*([\s\S]*)/)?.[1]?.trim() || '';
-
-                        setCurrentQuestion({
-                          title,
-                          company: job.company,
-                          description: job.description,
-                          example: problem,
-                          sample: `🔢 Input: ${input}\n✅ Output: ${output}\n🧠 Explanation: ${explanation}`,
-                          testCases: testCases || [],
-                          _id: job._id
-                        });
+                            example: '',
+                            sample: '',
+                            testCases: responseJson.testCases || [],
+                            _id: job._id
+                          };
+                      
+                          if (responseJson.problem && responseJson.input && responseJson.output) {
+                            // ✅ LeetCode format
+                            question.title = responseJson.title || job.title;
+                            question.example = responseJson.problem || '';
+                            question.sample = `🔢 Input: ${responseJson.input}\n✅ Output: ${responseJson.output}\n🧠 Explanation: ${responseJson.explanation}`;
+                          } else if (typeof responseJson.result === 'string') {
+                            // ✅ GFG format
+                            const result = responseJson.result;
+                            question.title = result.match(/Title:\s*(.*)/)?.[1]?.trim() || job.title;
+                            question.example = result.match(/Problem:\s*([\s\S]*?)\nInput:/)?.[1]?.trim() || '';
+                            const input = result.match(/Input:\s*([\s\S]*?)\nOutput:/)?.[1]?.trim() || '';
+                            const output = result.match(/Output:\s*([\s\S]*?)\nExplanation:/)?.[1]?.trim() || '';
+                            const explanation = result.match(/Explanation:\s*([\s\S]*)/)?.[1]?.trim() || '';
+                            question.sample = `🔢 Input: ${input}\n✅ Output: ${output}\n🧠 Explanation: ${explanation}`;
+                          } else {
+                            alert("⚠️ Invalid question format received from AI.");
+                            console.log("❌ Unrecognized structure:", responseJson);
+                            return;
+                          }
+                      
+                          setCurrentQuestion(question);
+                        } catch (err) {
+                          console.error("❌ Failed to generate question:", err);
+                          alert("Something went wrong while generating the question.");
+                        }
                       }}
+                      
+                      
                     >
                       🚀 Start Interview
                     </button>
