@@ -6,7 +6,7 @@ router.post('/ai-match', async (req, res) => {
   const { title, description, difficulty } = req.body;
 
   const prompt = `
-You are an AI expert at creating coding interview questions.
+You are an AI expert at creating coding interview questions, Generate random data structure and algorithms problem asked in big tech companies. For reference you can use https://www.geeksforgeeks.org/
 
 Given the job:
 Title: ${title}

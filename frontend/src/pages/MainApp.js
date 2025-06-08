@@ -315,11 +315,32 @@ export default function MainApp({ user }) {
           <div className="col-12">
             <div className="card shadow">
               <div className="card-body">
-                <h4 className="card-title">{currentQuestion.title}</h4>
-                <p className="card-text white-space-pre-line">{currentQuestion.company}</p>
-                <p className="card-text white-space-pre-line">{currentQuestion.description}</p>
-                <p className="bg-light p-3 border-start border-4 border-primary rounded">{currentQuestion.example}</p>
-                <pre className="bg-light p-3 border-start border-4 border-secondary rounded">{currentQuestion.sample}</pre>
+              <h4 className="card-title text-primary">{currentQuestion.title}</h4>
+
+                <div className="mb-3">
+                  <h6 className="fw-bold text-muted">🏢 Company:</h6>
+                  <p>{currentQuestion.company}</p>
+                </div>
+
+                <div className="mb-3">
+                  <h6 className="fw-bold text-muted">📄 Job Description:</h6>
+                  <p className="white-space-pre-line">{currentQuestion.description}</p>
+                </div>
+
+                <div className="mb-3">
+                  <h6 className="fw-bold text-muted">🧠 Problem Statement:</h6>
+                  <p className="white-space-pre-line bg-light p-3 border-start border-4 border-primary rounded">
+                    {currentQuestion.example}
+                  </p>
+                </div>
+
+                <div className="mb-3">
+                  <h6 className="fw-bold text-muted">📘 Sample I/O + Explanation:</h6>
+                  <pre className="bg-light p-3 border-start border-4 border-secondary rounded">
+                    {currentQuestion.sample}
+                  </pre>
+                </div>
+
               </div>
             </div>
           </div>

@@ -6,14 +6,14 @@ router.post('/ai-match', async (req, res) => {
   const { title, description, difficulty } = req.body;
 
   const prompt = `
-You are a LeetCode expert who returns STRICTLY valid JSON only.
+You are a LeetCode expert who returns STRICTLY valid JSON only, Generate random data structure and algorithms problem asked in big tech companies.
 
 Given:
 Title: ${title}
 Description: ${description}
 Difficulty: ${difficulty}
 
-Respond with EXACTLY this JSON structure (no markdown, no comments):
+Respond with EXACTLY this example JSON structure (no markdown, no comments):
 
 {
   "title": "Longest Substring Without Repeating Characters",
