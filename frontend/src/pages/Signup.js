@@ -1,30 +1,49 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Signup({ onAuth }) {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const API_URL = 'http://localhost:5002';
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await fetch('http://localhost:5002/api/auth/signup', {
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Signup failed');
 
-      // ✅ Ensure user has `id` for consistency
       const userWithId = {
         ...data.user,
         id: data.user.id || data.user._id,
@@ -42,25 +61,71 @@ export default function Signup({ onAuth }) {
   };
 
   return (
-    <div className="container py-5">
-      <h2>Signup</h2>
-      {error && <p className="text-danger">{error}</p>}
+    <div className="container py-5" style={{ maxWidth: '500px' }}>
+      <h2 className="mb-4 text-center">Create an Account</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+
       <form onSubmit={handleSubmit}>
-        {['name', 'email', 'password'].map((field) => (
-          <div key={field} className="mb-3">
-            <label>{field}</label>
+        <div className="mb-3">
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Password</label>
+          <div className="input-group">
             <input
-              type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
-              name={field}
-              value={form[field]}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={form.password}
               onChange={handleChange}
               className="form-control"
+              minLength={6}
               required
-              minLength={field === 'password' ? 6 : undefined}
             />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
           </div>
-        ))}
-        <button className="btn btn-primary" disabled={loading}>
+        </div>
+
+        <div className="mb-3">
+          <label>Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        <button className="btn btn-primary w-100" disabled={loading}>
           {loading ? 'Signing up...' : 'Sign Up'}
         </button>
       </form>

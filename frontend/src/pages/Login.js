@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Login({ onAuth }) {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const API_URL = 'http://localhost:5002';
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,7 +21,7 @@ export default function Login({ onAuth }) {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5002/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -26,7 +30,6 @@ export default function Login({ onAuth }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed');
 
-      // ✅ Ensure user has an `id` field
       const userWithId = {
         ...data.user,
         id: data.user.id || data.user._id,
@@ -44,26 +47,48 @@ export default function Login({ onAuth }) {
   };
 
   return (
-    <div className="container py-5">
-      <h2>Login</h2>
-      {error && <p className="text-danger">{error}</p>}
+    <div className="container py-5" style={{ maxWidth: '500px' }}>
+      <h2 className="mb-4 text-center">Login to Your Account</h2>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
       <form onSubmit={handleSubmit}>
-        {['email', 'password'].map((field) => (
-          <div key={field} className="mb-3">
-            <label htmlFor={field} className="form-label">{field}</label>
+        <div className="mb-3">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Password</label>
+          <div className="input-group">
             <input
-              type={field === 'password' ? 'password' : 'email'}
-              name={field}
-              id={field}
-              value={form[field]}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={form.password}
               onChange={handleChange}
               className="form-control"
+              minLength={6}
               required
-              minLength={field === 'password' ? 6 : undefined}
             />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
           </div>
-        ))}
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        </div>
+
+        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
